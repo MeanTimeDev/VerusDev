@@ -397,7 +397,7 @@ DEPENDENCIES:
   - ZcashLightClientKit/Tests (from `https://github.com/michaeltout/ZcashLightClientKit.git`)
 
 SPEC REPOS:
-  trunk:
+  https://github.com/cocoapods/specs.git:
     - boost-for-react-native
     - CGRPCZlib
     - CNIOAtomics
@@ -600,8 +600,8 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 2cbd9409689b7df170d82a92a33443c8e3e14a70
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
-  ZcashLightClientKit: 47e707be6657391d5d4fd7db1544b0d98ce45e42
+  ZcashLightClientKit: 12d7df0eed0f038db9574383533037b804638c99
 
 PODFILE CHECKSUM: 1b8236064a4376f90220274f1c9cc8d34ab1075c
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.7.5

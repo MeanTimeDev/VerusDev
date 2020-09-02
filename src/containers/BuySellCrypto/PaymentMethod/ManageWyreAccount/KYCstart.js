@@ -10,6 +10,7 @@ import {
   selectWyreAccount,
   selectWyreGetAccountIsFetching,
 } from '../../../../selectors/paymentMethods';
+import PrimeTrustService from '../../../../services/PrimeTrustService';
 
 import {
   Input,
@@ -30,7 +31,8 @@ constructor(props) {
     userName: "",
     userEmail: "",
     userPassword: "",
-    checked: false
+    checked: false,
+    primeTrust: new PrimeTrustService()
   };
 }
 
@@ -46,12 +48,16 @@ onChangeName = (input) => { this.setState({ userName: input }) }
 onChangeEmail = (input) => { this.setState({ userEmail: input }) }
 onChangePassword = (input) => { this.setState({ userPassword: input }) }
 
-_checkDetails = () => {
+_checkDetails = async () => {
   /*  WHEN ACCESS TO API FIX THIS FUNCTION */
 
-  const chris = true;
+  //create the 
+  console.log("checking details");
+  //const result = await PrimeTrustService.createUser(this.state.userName,this.state.userEmail,this.state.userPassword);
+  const result = await this.state.primeTrust.createUser(this.state.userName,this.state.userEmail,this.state.userPassword);
 
-  if(chris === true){
+  //let result = true;
+  if(result === true){
     return true;
   }else{
     return false;
