@@ -50,23 +50,16 @@ const styles = StyleSheet.create({
   },
 });
 
-let doesContainAddress = false;
 
 
-class KYCfoto extends Component {
+class KYCidPhotoUploads extends Component {
   constructor(props) {
     super(props);
-    //check the id type that is being processed
-    //console.log(this.props);
-    //this.state.documentType = props.route.params.documentType;
-    //this.state.hasAddress = props.route.params.includeAddress;
     this.state = {
       image: null,
       error: null,
       documents: [],
-      isFetching: true,
-      documentType : props.route.params.documentType,
-      hasAddress : props.route.params.includeAddress,
+      isFetching: true
     };
 
     if(PrimeTrustInterface.user === null) {
@@ -78,11 +71,6 @@ class KYCfoto extends Component {
     this.getUploadedDocuments();
     
   }
-/*
-  {"field": undefined, "fieldId": "individualGovernmentId", "isFetching": false, 
-  "navigation": {"addListener": [Function addListener], "canGoBack": [Function canGoBack], "closeDrawer": [Function anonymous], "dangerouslyGetParent": [Function dangerouslyGetParent], "dangerouslyGetState": [Function anonymous], "dispatch": [Function dispatch], "goBack": [Function anonymous], "isFocused": [Function isFocused], "jumpTo": [Function anonymous], "navigate": [Function anonymous], "openDrawer": [Function anonymous], "pop": [Function anonymous], "popToTop": [Function anonymous], "push": [Function anonymous], "removeListener": [Function removeListener], "replace": [Function anonymous], "reset": [Function anonymous], "setOptions": [Function setOptions], "setParams": [Function anonymous], "toggleDrawer": [Function anonymous]}, 
-  "route": {"key": "KYCfoto-McTASvlIPRbt1D9vcjtyr", "name": "KYCfoto", "params": {"documentType": null, "includeAddress": null}}, "uploadWyreAccountDocument": [Function anonymous]}
-*/
 
   handleSelect = () => {
     Keyboard.dismiss();
@@ -140,6 +128,7 @@ class KYCfoto extends Component {
 
     }
   };
+
 
   
   render() {
@@ -266,10 +255,8 @@ const mapDispatchToProps = ({
   uploadWyreAccountDocument,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(KYCfoto);
-
 export {
   KYCfoto
 }
 
-
+export default connect(mapStateToProps, mapDispatchToProps)(KYCfoto);

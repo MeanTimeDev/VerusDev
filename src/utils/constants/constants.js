@@ -76,7 +76,10 @@ export const WYRE_REFERRER_ACCOUNT_ID = 'verus-valu';
 
 export const SUPPORTED_COUNTRIES = ['US'];
 export const WYRE_COUNTRIES = [{ value: 'US' }, ];
+
+export const PRIMETRUST_COUNTRIES = [{ value: 'US' },{ value: 'GB' }, ];
 export const STATES = [
+    { value: 'N/A' },
     { value: 'AL' },
     { value: 'AK' },
     { value: 'AS' },

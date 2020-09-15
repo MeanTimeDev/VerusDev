@@ -4,7 +4,8 @@ import {
   ScrollView,
   View,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
@@ -20,31 +21,74 @@ import {
 import {
   putWyreAccountField
 } from '../../../../actions/actions/PaymentMethod/WyreAccount';
-import { STATES, WYRE_COUNTRIES } from '../../../../utils/constants/constants';
+import { STATES, PRIMETRUST_COUNTRIES } from '../../../../utils/constants/constants';
 import Colors from '../../../../globals/colors';
+import PrimeTrustInterface from '../../../../utils/PrimeTrust/provider';
+import { update } from 'lodash';
 
 
 class KYCAddressInput extends Component {
   constructor(props) {
     super(props);
 
-    const individualAddress = typeof this.props.individualResidenceAddress === 'undefined' ? {} : this.props.individualResidenceAddress.value;
+    if(PrimeTrustInterface.user === null) {
+      //redirect to  the  login page
+      console.log("redirecting to login page:");
+      this.props.navigation.navigate("KYCStart");
+    }
 
-    this.state = {
-      streetAddress: individualAddress.street1,
+    const individualAddress = typeof this.props.individualResidenceAddress === 'undefined' ? {} : this.props.individualResidenceAddress.value;
+    //load the contact if there is one on the user
+    this.state= {
+      streetAddress1: individualAddress.street1,
+      streetAddress2: individualAddress.street2,
       city: individualAddress.city,
-      countryState: individualAddress.state,
+      region: individualAddress.region,
       postalCode: individualAddress.postalCode,
       country: individualAddress.country,
       errors: {
-        streetAddress: null,
+        streetAddress1: null,
+        streetAddress2: null,
         city: null,
-        countryState: null,
+        region: null,
         postalCode: null,
         country: null,
       },
-
     };
+
+    let existingContact = null;
+    let updatedContact = props.route.params.contact !=undefined ? this.state.contact = props.route.params.contact : null;
+
+    if(props.route.params.contact != undefined){
+      this.state.contact = props.route.params.contact;
+
+    } else {
+      //need to load the user and update the address
+      this.state.contact = {};
+    }
+
+    let existingAddress = null;
+    PrimeTrustInterface.getAddresses().then((addresses) => {
+      console.log("addresses:",addresses.data.data[0]);
+      if(addresses.data.data[0] != undefined){
+        //set any updated fields
+        existingAddress = addresses.data.data[0].attributes;
+        console.log("ExistingAddress",existingAddress);
+        console.log("individual Country:",existingAddress["country"]);
+        if(existingAddress != null){
+          if(this.state.streetAddress1 == undefined) this.setState({streetAddress1 : existingAddress["street-1"]});
+          if(this.state.streetAddress2 == undefined) this.setState({streetAddress2 : existingAddress["street-2"]});
+          if(this.state.city == undefined) this.setState({city : existingAddress["city"]});
+          if(this.state.region == undefined) this.setState({region : existingAddress["region"]});
+          if(this.state.postalCode == undefined) this.setState({postalCode : existingAddress["postal-code"]});
+          if(this.state.country == undefined) this.setState({country : existingAddress["country"]});
+         }
+      }
+      console.log("state:",this.state);  
+    });
+    
+
+    
   }
 
   handleError = (error, field) => {
@@ -55,22 +99,40 @@ class KYCAddressInput extends Component {
 
   handleSubmit = () => {
     Keyboard.dismiss();
-    this.validateFormData();
+    console.log("handleSunmit",this.state);
+    if(!this.validateFormData()){
+      
+        this.doSubmit();
+
+    } else {
+      console.log("errors:",this.state.errors);
+      //loop throiugh the errors and create a message
+      let message = "";
+      this.state.errors.forEach((value,key) => {
+        message += key + " " + value + "\r\n";
+      });
+      Alert.alert("Contact details failed", message );
+    }
   };
 
   validateFormData = () => {
+
+    console.log("validating data");
     this.setState({
       errors: {
-        streetAddress: null,
+        streetAddress1: null,
+        streetAddress2: null,
         city: null,
-        countryState: null,
+        region: null,
         postalCode: null,
         country: null,
       },
     }, () => {
-      const userStreetAddress = this.state.streetAddress;
+      console.log("state:",this.state);
+      const userStreetAddress1 = this.state.streetAddress1;
+      const userStreetAddress2 = this.state.streetAddress2;
       const userCity = this.state.city;
-      const userCountryState = this.state.countryState;
+      const userregion = this.state.region;
       const userPostalCode = this.state.postalCode;
       const userCountry = this.state.country;
 
@@ -80,8 +142,8 @@ class KYCAddressInput extends Component {
       const regexCity = /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/;
 
 
-      if (!userStreetAddress) {
-        this.handleError('Required field', 'streetAddress');
+      if (!userStreetAddress1) {
+        this.handleError('Required field', 'streetAddress 1');
         inputError = true;
       }
 
@@ -90,8 +152,8 @@ class KYCAddressInput extends Component {
         inputError = true;
       }
 
-      if (!userCountryState) {
-        this.handleError('Required field, Choose one', 'countryState');
+      if (!userregion) {
+        this.handleError('Required field, Choose one', 'region');
         inputError = true;
       }
 
@@ -108,23 +170,68 @@ class KYCAddressInput extends Component {
         inputError = true;
       }
 
-      if (!inputError) {
-        this.doSubmit();
-      }
+      return inputError;
+      
     });
   }
 
   doSubmit = async () => {
-    this.props.putWyreAccountField([{
-      fieldId: 'individualResidenceAddress',
-      value: {
-        street1: this.state.streetAddress,
-        city: this.state.city,
-        state: this.state.countryState,
-        postalCode: this.state.postalCode,
-        country: this.state.country,
-      }
-    }], this.props.navigation);
+
+    //create a contact if there isnt one on the user currently and then add it in 
+    
+    //need to check if there is an existing contact
+    //if there is an existing contact then update that contact
+    //let contacts = await PrimeTrustInterface.getContacts();
+    
+    //create a new contact
+    let contact = this.state.contact;
+    console.log(this.state);
+    let address = {
+      "street-1" : this.state.streetAddress1,
+      "street-2" : this.state.streetAddress2,
+      "postal-code" : this.state.postalCode,
+      "regin" : this.state.region,
+      "city" : this.state.city,
+      "country" : this.state.country
+    };
+    if(this.state.county == "US") address.region =this.state.region;
+
+    let updatedContact = {};
+    if(this.existingContact != null){
+      console.log("Updated existing contact");
+      updatedContact = await PrimeTrustInterface.updateUserContact(existingContact.id,
+        contact.email,
+        contact.name,
+        contact.dob,
+        contact.gender,
+        contact.ssn,
+        contact.taxCountry,
+        contact.phoneCountry,
+        contact.phoneNumber,address);
+      
+    } else {
+      console.log("Creating new contact");
+      updatedContact = await PrimeTrustInterface.createUserContact(contact.email,
+        contact.name,
+        contact.dob,
+        contact.gender,
+        contact.ssn,
+        contact.taxCountry,
+        contact.phoneCountry,
+        contact.phoneNumber,address);
+  
+    }
+    if(updatedContact.success){
+      console.log("updated Contact result",updatedContact);
+      this.props.navigation.navigate("KYCIdentityFotoInfo")
+
+    } else {
+      console.log("Errors",updatedContact.error);
+    }
+      
+    
+
+
   };
 
   render() {
@@ -148,7 +255,7 @@ class KYCAddressInput extends Component {
             <Badge
               status="success"
               badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-              containerStyle={Styles.horizontalPaddingBox10}
+              containerStyle={Styles.horizontalPaddingBox10} 
             />
             <Badge
               status="primary"
@@ -163,13 +270,23 @@ class KYCAddressInput extends Component {
             />
             <ScrollView>
             <View style={Styles.root}>
+              <Input
+                label="Street Address 1"
+                labelStyle={styles.formLabel}
+                onChangeText={(text) => this.setState({ streetAddress1: text })}
+                value={this.state.streetAddress1}
+                autoCorrect={false}
+                inputStyle={styles.formInputContainer}
+              />
+            </View>
+            <View style={Styles.root}>
 
               <Input
-                label="Street Address"
+                label="Street Address 2"
                 labelStyle={styles.formLabel}
 
-                onChangeText={(text) => this.setState({ streetAddress: text })}
-                value={this.state.streetAddress}
+                onChangeText={(text) => this.setState({ streetAddress2: text })}
+                value={this.state.streetAddress2}
                 autoCorrect={false}
                 inputStyle={styles.formInputContainer}
               />
@@ -194,11 +311,11 @@ class KYCAddressInput extends Component {
                   labelTextStyle={{ fontFamily: 'Avenir-Book'}}
                   labelFontSize={13}
                   data={STATES}
-                  onChangeText={(value) => this.setState({ countryState: value })}
+                  onChangeText={(value) => this.setState({ region: value })}
                   textColor={Colors.quaternaryColor}
                   selectedItemColor={Colors.quaternaryColor}
                   baseColor={Colors.quaternaryColor}
-                  value={this.state.countryState}
+                  value={this.state.region == null? 'N/A': this.state.region}
                   inputContainerStyle={styles.dropdownInputContainer}
                   pickerStyle={{backgroundColor: Colors.tertiaryColor}}
                 />
@@ -206,7 +323,7 @@ class KYCAddressInput extends Component {
             </View>
             <View>
               <Input
-                label="postal Code"
+                label="Postal Code"
                 labelStyle={styles.formLabel}
 
                 onChangeText={(text) => this.setState({ postalCode: text })}
@@ -223,7 +340,7 @@ class KYCAddressInput extends Component {
                   label="Country: "
                   labelTextStyle={{ fontWeight: '700' }}
                   labelFontSize={13}
-                  data={WYRE_COUNTRIES}
+                  data={PRIMETRUST_COUNTRIES}
                   onChangeText={(value) => this.setState({ country: value })}
                   textColor={Colors.quaternaryColor}
                   selectedItemColor={Colors.quaternaryColor}

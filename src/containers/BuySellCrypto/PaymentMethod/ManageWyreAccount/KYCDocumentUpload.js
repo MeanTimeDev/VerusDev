@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 let doesContainAddress = false;
 
 
-class KYCfoto extends Component {
+class KYCDocumentUpload extends Component {
   constructor(props) {
     super(props);
     //check the id type that is being processed
@@ -65,9 +65,22 @@ class KYCfoto extends Component {
       error: null,
       documents: [],
       isFetching: true,
-      documentType : props.route.params.documentType,
-      hasAddress : props.route.params.includeAddress,
+      documentType : this.props.route.params.documentType,
+      hasAddress : this.props.route.params.includeAddress,
+      completeDocuments : false
     };
+
+    switch(this.props.route.params.documentType) {
+      case "Drivers License":
+        this.state.currentDocument = "Front of Drivers License"
+        break;
+      case "Identity Card":
+        this.state.currentDocument = "Front of Identity Card"
+        break;
+      default :
+        this.state.currentDocument = "Passport Photo Page"  
+    }
+
 
     if(PrimeTrustInterface.user === null) {
       //redirect to  the  login page
@@ -75,17 +88,14 @@ class KYCfoto extends Component {
       this.props.navigation.navigate("KYCStart");
     }
     //load docs
-    this.getUploadedDocuments();
+    //this.getUploadedDocuments();
+    this.getContacts();
     
   }
-/*
-  {"field": undefined, "fieldId": "individualGovernmentId", "isFetching": false, 
-  "navigation": {"addListener": [Function addListener], "canGoBack": [Function canGoBack], "closeDrawer": [Function anonymous], "dangerouslyGetParent": [Function dangerouslyGetParent], "dangerouslyGetState": [Function anonymous], "dispatch": [Function dispatch], "goBack": [Function anonymous], "isFocused": [Function isFocused], "jumpTo": [Function anonymous], "navigate": [Function anonymous], "openDrawer": [Function anonymous], "pop": [Function anonymous], "popToTop": [Function anonymous], "push": [Function anonymous], "removeListener": [Function removeListener], "replace": [Function anonymous], "reset": [Function anonymous], "setOptions": [Function setOptions], "setParams": [Function anonymous], "toggleDrawer": [Function anonymous]}, 
-  "route": {"key": "KYCfoto-McTASvlIPRbt1D9vcjtyr", "name": "KYCfoto", "params": {"documentType": null, "includeAddress": null}}, "uploadWyreAccountDocument": [Function anonymous]}
-*/
 
-  handleSelect = () => {
+  handleSelect = async () => {
     Keyboard.dismiss();
+    this.isFetch = true;
     ImagePicker.showImagePicker((response) => {
       if (response.error) {
         Alert.alert(response.error);
@@ -96,17 +106,69 @@ class KYCfoto extends Component {
           image: response,
         });
       }
+
+      //upload the image to primeTrust
+      let document = await PrimeTrustInterface.sendDocument(contact.id,
+        this.state.documentType,
+        this.state.image);
+      if(document.success){
+
+        //store the document
+        let tempDocuments = this.state.documents;
+        tempDocuments.push({
+          type:this.state.currentDocument,
+          document:document.data.data
+        });
+        this.setState({documents: tempDocuments});
+
+        //set the next required document and store the document in the state
+       switch(this.state.currentDocument) {
+         case "Front of Drivers License" :
+           this.setState({currentDocument : "Back of Drivers License"});
+           break;
+         case "Back of Drivers License" :
+            if(this.state.hasAddress) {
+              this.setState({completeDocuments : true});
+            } else {
+              this.setState({currentDocument : "Proof of Address Document"});
+            }
+            break;
+         case "Front of Identity Card" :
+            this.setState({currentDocument : "Back of Drivers License"});
+            break;
+         case "Back of Identity Card" :
+              if(this.state.hasAddress) {
+                this.setState({completeDocuments : true});
+              } else {
+                this.setState({currentDocument : "Proof of Address Document"});
+              }
+              break;
+         case "Proof of Address Document" :
+          this.setState({completeDocuments : true});
+           break;  
+       } 
+                
+      } else {
+        let message = document.error[0].source.pointer + document.error[0].detail;
+        Alert.alert("There was a problem with your image", message );
+      }
+      this.isFetching = false;
     });
   };
 
   getUploadedDocuments = () => {
     this.isFetching = true;
-    
     PrimeTrustInterface.getUploadedDocuments().then((retrievedDocuments) => {
       this.setState({documents : retrievedDocuments.data.data});  
       this.setState({isFetching : false});
     });
+  }
 
+  getContacts = () => {
+    PrimeTrustInterface.getContacts().then((contacts) => {
+      let contact = contacts.data.data[0];
+      this.setState({contact: contact});
+    })
   }
 
   clearSelectedImage = () => {
@@ -141,7 +203,6 @@ class KYCfoto extends Component {
     }
   };
 
-  
   render() {
     const scaleFactorY = 2;
     const scalefatorX = 2;
@@ -177,66 +238,39 @@ class KYCfoto extends Component {
               textContent="Loading..."
               textStyle={{ color: '#FFF' }}
             />
-            <View>
-              <Text style={styles.formLabel}>
-                Uploaded documents: &nbsp; &nbsp;
-                { this.state.documents == null ? 0 : this.state.documents.length}
-              </Text>
-            <FlatList data={this.state.documents} renderItem={({item}) => <View><Text>{item.attributes.label}</Text><Image style={styles.logo} source={{uri: item.attributes["file-url"]}}/></View>} />
-            </View>
-            {!this.state.image && (
-            <View>
-            <View style={styles.dropdownInput}>
-              <Dropdown
-                labelExtractor={(item) => item.value}
-                valueExtractor={(item) => item.value}
-                label="Select Document Type"
-                labelTextStyle={{ fontFamily: 'Avenir-Book'}}
-                labelFontSize={13}
-                data={[{value:'Drivers License Front'},{value:'Drivers License Back'},{value:'Identity Card Front'},{value:'Identity Card Back'},{value:'Passport'}]}
-                onChangeText={(value) => this.setState({ documentType: value })}
-                textColor={Colors.quaternaryColor}
-                selectedItemColor={Colors.quaternaryColor}
-                baseColor={Colors.quaternaryColor}
-                value={this.state.documentType == null? 'N/A': this.state.documentType}
-                inputContainerStyle={styles.dropdownInputContainer}
-                pickerStyle={{backgroundColor: Colors.tertiaryColor}}
-              />
-            </View>
-            <CheckBox
-              title='Contains Address'
-              checked={this.state.containsAddress}
-              />
-              
-              <View style={styles.buttonContainerBottom}>
-                <Button
-                titleStyle={Styles.whiteText}
-                buttonStyle={Styles.defaultButtonClearWhite}
-                  title="UPLOAD DOCUMENT"
-                  onPress={this.handleSelect}
-                />
-              </View>
+
+            {!this.state.allDocuments && (
+              <View>  
+                <View style={styles.buttonContainerBottom}>
+                  <Button
+                  titleStyle={Styles.whiteText}
+                  buttonStyle={Styles.defaultButtonClearWhite}
+                    title={this.state.currentDocument}
+                    onPress={this.handleSelect}
+                  />
+                </View>
               </View>
             )}
-            {this.state.image && (
+
+            {this.state.allDocuments && (
+            <View>
               <View>
-                <Image
-                  style={styles.imageContainer}
-                  source={{ uri: this.state.image.uri }}
-                />
-                <View style={styles.buttonContainer}>
-                  <Button
-                  titleStyle={Styles.whiteText}
-                  buttonStyle={Styles.defaultButtonClearWhite}
-                    title="CONFIRM"
-                    onPress={this.handleUpload}
-                  />
-                  <Button
-                  titleStyle={Styles.whiteText}
-                  buttonStyle={Styles.defaultButtonClearWhite}
-                    title="CANCEL"
-                    onPress={this.clearSelectedImage}
-                  />
+                <FlatList data={this.state.documents} renderItem={({item}) => 
+                <View><Text>{item.attributes.label}</Text>
+                <Image style={styles.logo} source={{uri: item.attributes["file-url"]}}/>
+                </View>} />
+              </View>
+
+                <View>
+
+                  <View style={styles.buttonContainer}>
+                    <Button
+                    titleStyle={Styles.whiteText}
+                    buttonStyle={Styles.defaultButtonClearWhite}
+                      title="CONFIRM AND SUBMIT"
+                      onPress={this.handleUpload}
+                    />
+                  </View>
                 </View>
               </View>
             )}
@@ -266,10 +300,10 @@ const mapDispatchToProps = ({
   uploadWyreAccountDocument,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(KYCfoto);
+export default connect(mapStateToProps, mapDispatchToProps)(KYCDocumentUpload);
 
 export {
-  KYCfoto
+  KYCDocumentUpload
 }
 
 

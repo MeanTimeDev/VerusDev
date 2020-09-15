@@ -43,7 +43,7 @@ class KYCIdentityFotoInfo extends Component {
 
 
 
-  onClick = () => {  this.props.navigation.navigate("KYCfoto") }
+  onClick = () => {  this.props.navigation.navigate("KYCDocumentType") }
 
 
     render() {

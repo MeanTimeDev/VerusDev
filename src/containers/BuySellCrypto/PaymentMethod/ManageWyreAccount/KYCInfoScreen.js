@@ -25,6 +25,7 @@ import { NavigationActions } from '@react-navigation/compat'
 class KYCInfoScreen extends Component {
 constructor(props) {
   super(props)
+
 }
 
 
@@ -36,7 +37,9 @@ constructor(props) {
 
   }
 
-onClick = () => {   this.props.navigation.navigate("KYCIdentityInfo") }
+onClick = () => {   
+  //pass the props along
+  this.props.navigation.navigate("KYCIdentityInput") }
 
 
   render() {

@@ -58,9 +58,11 @@ import KYCIdentityInput from '../../containers/BuySellCrypto/PaymentMethod/Manag
 import KYCAddressInput from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCAddressInput';
 import KYCIdentityFotoInfo from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCIdentityFotoInfo';
 import KYCfoto from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCfoto';
+import KYCDocumentType from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCDocumentType';
 import KYCphotoAddress from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCphotoAddress';
 import KYCEndInfoScreen from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCEndInfoScreen';
 import KYCAddressInfo from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCAddressInfo';
+import KYCLogin from '../../containers/BuySellCrypto/PaymentMethod/ManageWyreAccount/KYCLogin';
 
 const WALLET = 'wallet';
 
@@ -363,8 +365,18 @@ function MainStackScreens() {
       />
 
       <MainStack.Screen
+        name="KYCLogin"
+        component={KYCLogin}
+      />
+
+      <MainStack.Screen
         name="KYCfoto"
         component={KYCfoto}
+      />
+
+      <MainStack.Screen
+        name="KYCDocumentType"
+        component={KYCDocumentType}
       />
 
       <MainStack.Screen

@@ -189,7 +189,7 @@ class Home extends Component {
   }
 
   onKYCScreen = () => {
-    this.props.navigation.navigate("KYCStartScreen");
+    this.props.navigation.navigate("KYCLogin");
   }
 
   renderCoinList = () => {

@@ -8,7 +8,7 @@ class axiosConnect {
         else this.axiosEndpoint = "https://primetrust.com";
         this.service = axios.create({
             baseURL: this.axiosEndpoint,
-            headers: {
+            headers: { 
               'Content-Type': 'application/json'
             }
           });
@@ -27,20 +27,25 @@ class axiosConnect {
     async dataPostBasicAuth(url,username,password){
         url = this.axiosEndpoint + url;
         try{
+
             let response = await axios.post(url,{},{
                 auth: {
                     username: username,
                     password: password
                 }
             });
+            console.log("axios",response);
             return {
                 data: response.data.token,
-                status: response.status
+                status: response.status,
+                success: true,
+
             }
         } catch(error){
             console.log("error:",error)
             return {
                 data: null,
+                success: false,
                 error: error
             }
         }
@@ -62,6 +67,7 @@ class axiosConnect {
             //console.log("dataPost:",response);
             return {
                 data: response.data,
+                success: true,
                 status: response.status
             }
 
@@ -69,6 +75,7 @@ class axiosConnect {
             console.log(error);
             return {
                 data: null,
+                success: false,
                 error: error.response.data.errors
             }
         }
@@ -77,28 +84,34 @@ class axiosConnect {
     async filePost(url,data,jwt){
 
         var axios = require('axios');
-        console.log("data:",data);
+        
+       
         let fullUrl = this.axiosEndpoint + url;
-        var config = {
+        let config = {
         method: 'post',
         url: fullUrl,
         headers: { 
             'Authorization': 'Bearer ' + jwt, 
-            ...data.getHeaders()
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            //...data.getHeaders()
         },
         data : data
         };
+        console.log("config:",config);
         let response = null;
         try{
             response = await axios(config);
             return{
                 data: response.data,
+                success: true,
                 status: response.status
             };
             
         } catch (error) {
             return {
                 data: null,
+                success: false,
                 error: error.response.data.errors,
             };
         }
@@ -118,12 +131,15 @@ class axiosConnect {
             
             return {
               data: response.data,
+              success: true,
               status: response.status,
             };
         } catch (error) {
             return {
               data: null,
-              error: this.processErrors(error),
+              status: false,
+              success: false,
+              error: error.response.data.errors,
             };
         }
     }
@@ -135,7 +151,7 @@ class axiosConnect {
  * All use functions for prime trust
  */
 
-class PrimeTrustService{
+class PrimeTrustInterface{
 
     constructor(){
         this.connection = new axiosConnect();
@@ -147,11 +163,7 @@ class PrimeTrustService{
         let response = await this.connection.dataGet(url,this.jwt);
         console.log(this.jwt);
         //console.log("response:",response);
-        if(response.data){
-            return response.data;
-        } else {
-            return response.error;
-        }
+        return response;
     }
 
     postUrl = async (url,data) => {
@@ -159,11 +171,7 @@ class PrimeTrustService{
         if(this.jwt) response = await this.connection.dataPost(url,data,this.jwt);
         else response = await this.connection.dataPost(url,data);
         console.log("post Url response:",response);
-        if(response.data){
-            return response.data;
-        } else {
-            return response.error;
-        }
+        return response;
     }
 
     createUser = async (username,email,password) => {
@@ -182,30 +190,33 @@ class PrimeTrustService{
         }
         
         let response = await this.postUrl(url,data);
-        console.log("Create user: " ,response);
-        if(response.id != undefined){
-            this.user = response.data.id;
-            return true;
-        } else {
-            return false;
-        }        
+        if(response.success){
+            this.user = response.data;
+          
+        } 
+        return response;       
     }
 
-    loginUser = async (username,password) => {
+    loginUser = async (email,password) => {
 
         let url = "/auth/jwts";
-        let response = await this.connection.dataPostBasicAuth(url,username,password);
-        console.log(response);
+        console.log("loginUser Parameters:",url,email,password);
+        let response = await this.connection.dataPostBasicAuth(url,email,password);
+        console.log("login user response:", response);
         
-        if(response.data){
+        if(response.success){
             this.jwt = response.data;
             console.log("loginUser jwt:",this.jwt);
-            return this.jwt;
+            return response;
         } else {
             //return response.error.response.data.errors;
             return response;
         }   
 
+    }
+
+    logoutUser = () => {
+        this.jwt = null;
     }
 
     createUserContact = async (
@@ -237,6 +248,7 @@ class PrimeTrustService{
             owner["primary-phone-number"]["country"] = primary_phone_country;
             owner["primary-phone-number"]["number"] = primary_phone_number;
         }
+        
         if(primary_address) owner["primary-address"] = primary_address;
 
         let attributes = {
@@ -252,14 +264,10 @@ class PrimeTrustService{
                 "attributes" : attributes
             }
         }
-        
+        console.log("Create User requrest:",request);
         let response = await this.postUrl(url,request);
         //console.log(response);
-        if(response.data){
-            return response.data;
-        } else {
-            return response;
-        }
+        return response;
     }
 
     getAccounts = async (account_id = null) => {
@@ -309,11 +317,7 @@ class PrimeTrustService{
         }
         let response = await this.connection.dataPost(url,request,this.jwt);
         //console.log(response);
-        if(response.data){
-            return true;
-        } else {
-            return response;
-        }
+        return response;
     }
 
     //returns an account for the current JWT
@@ -322,22 +326,17 @@ class PrimeTrustService{
         if(!this.jwt) return ("User is not logged in");
 
         let url = "/v2/users?include=contacts";
-
         let response = await this.getUrl(url);
-        
-        if(response.data){
+        if(response.success){
             this.user = response.data;
-            return response.data;
-        } else {
-            return response.error;
         }
-
+        return response;
     }
 
     //returns an account for the current JWT
     getContacts = async () => {
         if(!this.jwt) return ("User is not logged in");
-        let url = "/v2/contacts";
+        let url = "/v2/contacts?include=addresses";
         let response = this.getUrl(url);
         return response;
     }
@@ -348,24 +347,35 @@ class PrimeTrustService{
         return response;
     }
 
-    sendDocument = async (contact_id,description,document_type,uploaded_file) => {
+    getAddresses = async () => {
+        if(!this.jwt) return ("User is not logged in");
+        let url = "/v2/addresses";
+        let response = this.getUrl(url);
+        return response;
+    }
+    getAddress = async (address_id) => {
+        if(!this.jwt) return ("User is not logged in");
+        let url = "/v2/addresses/" + address_id;
+        let response = this.getUrl(url);
+        return response;
+    }
+
+    sendDocument = async (contact_id,document_type,uploaded_file) => {
 
         let url = "/v2/uploaded-documents";
         let data = new FormData();
         data.append('contact-id', contact_id);
-        data.append('description', description);
-        data.append('file', uploaded_file);
+        data.append('description', document_type);  
+        data.append('file', {
+            uri: uploaded_file.uri,
+            name: uploaded_file.fileName,
+            type: uploaded_file.type
+        });
         data.append('label', document_type);
         data.append('public', 'false');
         
         let response = await this.connection.filePost(url,data,this.jwt);
-        
-        if(response.data){
-            return response.data;
-        } else {
-            return response.error;
-        }
-
+        return response;
     }
 
     /**
@@ -874,6 +884,38 @@ if(this.user.id != undefined) account_id = this.user.id;
 
     }
 
+    /**
+     * returns the current status of the user
+     */
+    getStatus = async () => {
+
+        let status = {
+            user_created: false,
+            contact_created: false,
+            identity_confirmed: false,
+            identity_documents_verified: false,
+            proof_of_address_documents_verified: false,
+            cip_cleared: false,
+            aml_cleared: false,
+            account_complete: false,
+        };
+        if(!this.jwt) return status; //User not logged in
+        else status.user_created = true;
+        let contacts = await this.getContacts();
+        if(contacts.data.data[0] == undefined) return status; //user has not completed basic contact information
+        else status.contact_created = true;
+
+        let contact = contacts.data.data[0].attributes;
+        if(contact["identity-documents-verified"]) status.identity_documents_verified = true;
+        if(contact["identity-confirmed"]) status.identity_confirmed = true;
+        if(contact["proof-of-address-documents-verified"]) status.identity_confirmed = true;
+        if(contact["cip-cleared"]) status.cip_cleared = true;
+        if(contact["aml-cleared"]) status.aml_cleared = true;
+        if(status.cip_cleared && status.aml_cleared) status.account_complete = true;
+        return status;
+    }
+
+
     /** sandbox functions */
 
     sandboxVerifyKYC = async (kyc_check_id) => {
@@ -930,4 +972,4 @@ if(this.user.id != undefined) account_id = this.user.id;
 
 
 
-export default PrimeTrustService;
+export default PrimeTrustInterface;
