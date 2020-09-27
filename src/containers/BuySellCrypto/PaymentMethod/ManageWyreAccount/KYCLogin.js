@@ -53,9 +53,7 @@ onChangePassword = (input) => { this.setState({ userPassword: input }) }
 
 
 onCancel = () => {
-    console.log(`${this.state.userName}, ${this.state.userEmail}, ${this.state.userPassword}`)
-    this.props.navigation.dispatch(NavigationActions.back());
-
+    this.props.navigation.navigate("KYCStart")
   }
 
 onLogin = async () => {
@@ -63,18 +61,15 @@ onLogin = async () => {
 
   let login = await PrimeTrustInterface.loginUser(this.state.userEmail,this.state.userPassword);
   if( login.success === true){
-    this.props.navigation.navigate("KYCInfoScreen");
     //load the user
     await PrimeTrustInterface.getUser();
+    //redirect to the appropriate screen
+
+    this.props.navigation.navigate("KYCInfoScreen");
+
   } else {
-    console.log(signup.error);
-    let message = "";
-    if(signup.error.source.pointer == "/data/attributes/email") {
-      message = "Email " + signup.error.detail;
-    } else {
-      message = signup.error.source.pointer + signup.error.detail;
-    }
-    Alert.alert("Login failed", message );
+    console.log("login error:",login.error);
+    Alert.alert("Login failed", "Please cehck your email and password" );
   }
 }
 
@@ -101,6 +96,7 @@ onFlip = () => { this.state.checked === true ? this.setState({ checked: false })
             inputStyle={Styles.inputTextDefaultStyle}
             onChangeText={this.onChangePassword}
             autoCorrect={false}
+            secureTextEntry={true}
           />
         </View>
         <View style={ {...Styles.blockWithFlexStart, ...Styles.centralRow }}>

@@ -81,6 +81,35 @@ class axiosConnect {
         }
     }
 
+    async dataPatch(url,data,jwt = null,multipart = null){
+        try{
+            if(jwt){
+                this.setAuthorizationHeader(jwt)
+            } 
+            if(multipart){
+                this.setHeader('Content-Type', 'multipart/form-data');
+            }
+            let fullUrl = this.axiosEndpoint + url;
+            let response = null;
+
+            if(data === null) response = await this.service.post(`${fullUrl}`);
+            else response = await this.service.patch(`${fullUrl}`,data);
+            //console.log("dataPost:",response);
+            return {
+                data: response.data,
+                success: true,
+                status: response.status
+            }
+
+        } catch(error){
+            console.log(error);
+            return {
+                data: null,
+                success: false,
+                error: error.response.data.errors
+            }
+        }
+    }
     async filePost(url,data,jwt){
 
         var axios = require('axios');
@@ -305,7 +334,6 @@ class PrimeTrustInterface{
         if(tax_country) attributes["tax-country"] = tax_country;
         if(primary_phone_number && primary_phone_country) {
             attributes["primary-phone-number"] = {};
-            attributes["primary-phone-number"]["country"] = primary_phone_country;
             attributes["primary-phone-number"]["number"] = primary_phone_number;
         }
         if(primary_address) attributes["primary-address"] = primary_address;
@@ -315,8 +343,9 @@ class PrimeTrustInterface{
                 "attributes" : attributes
             }
         }
-        let response = await this.connection.dataPost(url,request,this.jwt);
-        //console.log(response);
+        console.log("attributes:",attributes);
+        let response = await this.connection.dataPatch(url,request,this.jwt);
+        console.log(response);
         return response;
     }
 
@@ -336,13 +365,13 @@ class PrimeTrustInterface{
     //returns an account for the current JWT
     getContacts = async () => {
         if(!this.jwt) return ("User is not logged in");
-        let url = "/v2/contacts?include=addresses";
+        let url = "/v2/contacts?include=primary-phone-number";
         let response = this.getUrl(url);
         return response;
     }
     getContact = async (contact_id) => {
         if(!this.jwt) return ("User is not logged in");
-        let url = "/v2/contacts/" + contact_id;
+        let url = "/v2/contacts/" + contact_id + "??include=primary-phone-number";
         let response = this.getUrl(url);
         return response;
     }
@@ -356,6 +385,18 @@ class PrimeTrustInterface{
     getAddress = async (address_id) => {
         if(!this.jwt) return ("User is not logged in");
         let url = "/v2/addresses/" + address_id;
+        let response = this.getUrl(url);
+        return response;
+    }
+    getPhoneNumbers = async () => {
+        if(!this.jwt) return ("User is not logged in");
+        let url = "/v2/phone-numbers";
+        let response = this.getUrl(url);
+        return response;
+    }
+    getPhoneNumber = async (phone_id) => {
+        if(!this.jwt) return ("User is not logged in");
+        let url = "/v2/phone-numbers/" + phone_id;
         let response = this.getUrl(url);
         return response;
     }
@@ -436,7 +477,6 @@ class PrimeTrustInterface{
     postKYCDocumentChecks = async (contact_id,
         documentFront,
         documentBack,
-        expiry_date,
         identity,
         identity_photo,
         proof_of_address,
@@ -451,7 +491,6 @@ class PrimeTrustInterface{
                     "contact-id" : contact_id,
                     "uploaded-document-id" : documentFront,
                     "backside-document-id" : documentBack,
-                    "expires-on" : expiry_date,
                     "identity" : identity,
                     "identity-photo" : identity_photo,
                     "proof-of-address" : proof_of_address,

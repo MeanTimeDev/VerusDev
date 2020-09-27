@@ -24,7 +24,7 @@ import Colors from '../../../../globals/colors';
 
 import { NavigationActions } from '@react-navigation/compat'
 
-class KYCstart extends Component {
+class KYCStart extends Component {
 constructor(props) {
   super(props)
   this.state = {
@@ -185,4 +185,4 @@ const mapStateToProps = (state) => ({
 });
 
 
-export default connect(mapStateToProps)(KYCstart);
+export default connect(mapStateToProps)(KYCStart);

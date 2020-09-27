@@ -190,16 +190,24 @@ class KYCAddressInput extends Component {
       "street-1" : this.state.streetAddress1,
       "street-2" : this.state.streetAddress2,
       "postal-code" : this.state.postalCode,
-      "regin" : this.state.region,
+      "region" : this.state.region,
       "city" : this.state.city,
       "country" : this.state.country
     };
     if(this.state.county == "US") address.region =this.state.region;
 
     let updatedContact = {};
-    if(this.existingContact != null){
-      console.log("Updated existing contact");
-      updatedContact = await PrimeTrustInterface.updateUserContact(existingContact.id,
+    if(this.state.contact.contactId != undefined){
+      console.log("Updated existing contact",this.state.contact.contactId,
+      contact.email,
+      contact.name,
+      contact.dob,
+      contact.gender,
+      contact.ssn,
+      contact.taxCountry,
+      contact.phoneCountry,
+      contact.phoneNumber,address);
+      updatedContact = await PrimeTrustInterface.updateUserContact(this.state.contact.contactId,
         contact.email,
         contact.name,
         contact.dob,
@@ -208,9 +216,17 @@ class KYCAddressInput extends Component {
         contact.taxCountry,
         contact.phoneCountry,
         contact.phoneNumber,address);
+        console.log("Updated Contact",updatedContact);
       
     } else {
-      console.log("Creating new contact");
+      console.log("Creating new contact",contact.email,
+      contact.name,
+      contact.dob,
+      contact.gender,
+      contact.ssn,
+      contact.taxCountry,
+      contact.phoneCountry,
+      contact.phoneNumber,address);
       updatedContact = await PrimeTrustInterface.createUserContact(contact.email,
         contact.name,
         contact.dob,
@@ -226,7 +242,7 @@ class KYCAddressInput extends Component {
       this.props.navigation.navigate("KYCIdentityFotoInfo")
 
     } else {
-      console.log("Errors",updatedContact.error);
+      console.log("Errors",updatedContact.errors);
     }
       
     

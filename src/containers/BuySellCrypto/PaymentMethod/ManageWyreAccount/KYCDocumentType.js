@@ -37,7 +37,7 @@ import PrimeTrustInterface from '../../../../utils/PrimeTrust/provider';
 import Styles from '../../../../styles/index';
 import Colors from '../../../../globals/colors';
 import { FlatList } from 'react-native-gesture-handler';
-
+import { PRIMETRUST_COUNTRIES } from '../../../../utils/constants/constants';
 const formatURI = (uri) => (
   Platform.OS === 'android' ? uri : uri.replace('file://', '')
 );
@@ -50,15 +50,14 @@ const styles = StyleSheet.create({
   },
 });
 
-let doesContainAddress = false;
-
 
 class KYCDocumentType extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      documentType: null,
-      includeAddress: null
+      documentType: "drivers_license",
+      containsAddress: true,
+      documentCountry: "US"
     };
 
     if(PrimeTrustInterface.user === null) {
@@ -71,7 +70,7 @@ class KYCDocumentType extends Component {
 
   handleSelect = () => {
     Keyboard.dismiss();
-    this.props.navigation.navigate("KYCDocumentUpload",{documentType: this.state.documentType,includeAddress: this.state.includeAddress});
+    this.props.navigation.navigate("KYCDocumentUpload",{documentType: this.state.documentType,containsAddress: this.state.containsAddress,documentCountry: this.state.documentCountry});
   };
 
   
@@ -109,21 +108,36 @@ class KYCDocumentType extends Component {
             <View>
                 <View style={styles.dropdownInput}>
                 <Dropdown
-                    labelExtractor={(item) => item.value}
-                    valueExtractor={(item) => item.value}
                     label="Select Document Type"
                     labelTextStyle={{ fontFamily: 'Avenir-Book'}}
                     labelFontSize={13}
-                    data={[{value:'Drivers License'},{value:'Identity Card'},{value:'Passport'}]}
+                    data={[{label:'Drivers License',value:'drivers_license'},{label:'Identity Card',value:'government_id'},{label:'Passport',value:'passport'}]}
                     onChangeText={(value) => this.setState({ documentType: value })}
                     textColor={Colors.quaternaryColor}
                     selectedItemColor={Colors.quaternaryColor}
                     baseColor={Colors.quaternaryColor}
-                    value={this.state.documentType == null? 'Drivers License': this.state.documentType}
+                    value={this.state.documentType == null? 'drivers_license': this.state.documentType}
                     inputContainerStyle={styles.dropdownInputContainer}
                     pickerStyle={{backgroundColor: Colors.tertiaryColor}}
                 />
                 </View>
+                <View style={styles.dropdownInput}>
+                  <Dropdown
+                    labelExtractor={(item) => item.value}
+                    valueExtractor={(item) => item.value}
+                    label="Country: "
+                    labelTextStyle={{ fontWeight: '700' }}
+                    labelFontSize={13}
+                    data={PRIMETRUST_COUNTRIES}
+                    onChangeText={(value) => this.setState({ documentCountry: value })}
+                    textColor={Colors.quaternaryColor}
+                    selectedItemColor={Colors.quaternaryColor}
+                    baseColor={Colors.quaternaryColor}
+                    value={this.state.country ? `${this.state.documentCountry}` : ''}
+                    inputContainerStyle={styles.dropdownInputContainer}
+                    pickerStyle={{backgroundColor: Colors.tertiaryColor}}
+                  />
+              </View>
                 <CheckBox
                     title='My document contains my current address'
                     checked={this.state.containsAddress}
@@ -133,7 +147,7 @@ class KYCDocumentType extends Component {
                     <Button
                     titleStyle={Styles.whiteText}
                     buttonStyle={Styles.defaultButtonClearWhite}
-                    title="UPLOAD DOCUMENT"
+                    title="NEXT"
                     onPress={this.handleSelect}
                     />
                 </View>

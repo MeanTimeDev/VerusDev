@@ -194,6 +194,7 @@ class KYCidPhotoUploads extends Component {
             </View>
             <CheckBox
               title='Contains Address'
+              value={true}
               checked={this.state.containsAddress}
               />
               

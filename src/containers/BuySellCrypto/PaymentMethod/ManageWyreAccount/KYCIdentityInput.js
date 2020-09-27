@@ -63,7 +63,6 @@ class KYCIdentityInput extends Component {
       socialSecurityNumber:  this.props.individualSsn == null? "" : this.props.individualSsn.value,
       gender: this.props.gender == null? "" : this.props.individualGender.value,
       phoneNumber: this.props.phoneNumber == null? "" : this.props.individualPhoneNumber.value,
-      phoneCountry: this.props.phoneCountry == null? "" : this.props.individualPhoneCountry.value,
       errors: {
         name: null,
         dateOfBirth: null,
@@ -85,14 +84,24 @@ class KYCIdentityInput extends Component {
     PrimeTrustInterface.getContacts().then((contacts) => {
       if(contacts.data.data[0] != undefined){
         existingContact = contacts.data.data[0];
-
+        
+        console.log("existing contact:",existingContact);
         this.setState({contactId : existingContact.id});
         if(this.state.name == "") this.setState({name : existingContact.attributes["name"]});
         if(this.state.taxCountry == "") this.setState({taxCountry : existingContact.attributes["tax-country"]});
         if(this.state.socialSecurityNumber == "") this.setState({socialSecurityNumber : existingContact.attributes["tax-id-number"]});
         if(this.state.gender == "") this.setState({gender : existingContact.attributes["sex"]});
-        if(this.state.phoneNumber == "") this.setState({phoneNumber : existingContact.attributes["phone-number"]});
-        if(this.state.phoneCountry == "") this.setState({phoneCountry : existingContact.attributes["phone-country"]});
+        
+        //retrieve the phone number
+        let existingPhoneNumberId = contacts.data.data[0].relationships["primary-phone-number"].data.id;
+        let existingPhoneNumber = contacts.data.included.find(item => 
+          item.type == "phone-numbers" && item.id == existingPhoneNumberId
+        );
+        if(existingPhoneNumberId) {
+          this.setState({phoneNumberID : existingPhoneNumberId});
+          if(this.state.phoneNumber == "") this.setState({phoneNumber : existingPhoneNumber.attributes.number});
+        }
+        
         if(this.state.dateOfBirth == "") this.setState({dateOfBirth : existingContact.attributes["date-of-birth"]});
       }
       console.log("after State:",this.state)
@@ -198,8 +207,7 @@ class KYCIdentityInput extends Component {
       gender: this.state.gender,
       ssn: this.state.socialSecurityNumber,
       taxCountry: this.state.taxCountry,
-      phoneNumber: this.state.phoneNumber,
-      phoneCountry:this.state.phoneCountry
+      phoneNumber: this.state.phoneNumber
     };
     if(this.state.contactId != undefined) contact.contactId = this.state.contactId;
     this.props.navigation.navigate("KYCAddressInput", {
@@ -344,26 +352,9 @@ class KYCIdentityInput extends Component {
                 />
               </View>
               <View>
-                <View style={styles.dropdownInput}>
-                  <Dropdown
-                    labelExtractor={(item) => item.value}
-                    valueExtractor={(item) => item.value}
-                    label="Phone Country: "
-                    labelTextStyle={{ fontWeight: '700' }}
-                    labelFontSize={13}
-                    data={PRIMETRUST_COUNTRIES}
-                    onChangeText={(value) => this.setState({ phoneCountry: value })}
-                    textColor={Colors.quaternaryColor}
-                    selectedItemColor={Colors.quaternaryColor}
-                    baseColor={Colors.quaternaryColor}
-                    value={this.state.taxCountry ? `${this.state.phoneCountry}` : ''}
-                    inputContainerStyle={styles.dropdownInputContainer}
-                    pickerStyle={{backgroundColor: Colors.tertiaryColor}}
-                  />
-                </View>
               <View>
               <Input
-                  label="Phone Number:"
+                  label="Phone Number including country code:"
                   labelStyle={styles.formLabel}
                   onChangeText={(text) => this.setState({ phoneNumber: text })}
                   value={this.state.phoneNumber}
