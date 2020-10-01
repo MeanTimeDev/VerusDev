@@ -68,10 +68,11 @@ import KYCDocumentUpload from '../../containers/BuySellCrypto/PaymentMethod/Mana
 const WALLET = 'wallet';
 
 const MainStack = createStackNavigator()
+const MainDrawer = createDrawerNavigator()
 const SignedOutStack = createStackNavigator()
 const SignedOutNoKeyStack = createStackNavigator()
 const LoadingStack = createStackNavigator()
-const RootStack = createDrawerNavigator()
+const RootStack = createStackNavigator()
 
 const styles = StyleSheet.create({
   header_title_noBack: {
@@ -113,11 +114,30 @@ const styles = StyleSheet.create({
 
 });
 
+function MainScreens() {
+  return (
+    <MainDrawer.Navigator
+      drawerWidth={250}
+      drawerPosition="right"
+      drawerContent={(props) => <SideMenu {...props} />}
+      screenOptions={{
+        swipeEnabled: false
+      }}
+    >
+      <MainDrawer.Screen 
+        name="MainStack"
+        component={MainStackScreens}
+      />
+    </MainDrawer.Navigator>
+  );
+}
+
 function MainStackScreens() {
   return (
     <MainStack.Navigator
       headerMode="screen"
-      screenOptions={({ navigation }) => ({
+      screenOptions={({ navigation, params }) => ({
+        headerShown: true,
         headerStyle: {
           backgroundColor: Colors.primaryColor,
         },
@@ -135,7 +155,6 @@ function MainStackScreens() {
             <Icon name="menu" size={35} color={Colors.secondaryColor} />
           </TouchableOpacity>
         ),
-        gesturesEnabled: false,
         headerTintColor: Colors.secondaryColor,
       })}
     >
@@ -180,8 +199,10 @@ function MainStackScreens() {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                route.params.clearClaims();
-                navigation.goBack();
+                if (route.params != null) {
+                  route.params.clearClaims();
+                  navigation.goBack();
+                }
               }}
               style={styles.goBackBtn}
             >
@@ -203,7 +224,7 @@ function MainStackScreens() {
         name="AttestationDetails"
         component={AttestationDetails}
         options={({ route }) => ({
-          title: route.params.id,
+          title: route.params != null ? route.params.id : null,
         })}
       />
 
@@ -211,7 +232,7 @@ function MainStackScreens() {
         name="Identity"
         component={Identity}
         options={({ route }) => ({
-          title: route.params.selectedScreen,
+          title: route.params != null ? route.params.selectedScreen : null,
         })}
       />
 
@@ -227,7 +248,7 @@ function MainStackScreens() {
         name="ClaimDetails"
         component={ClaimDetails}
         options={({ route }) => ({
-          title: route.params.claimName,
+          title: route.params != null ? route.params.claimName : null,
         })}
       />
 
@@ -235,7 +256,7 @@ function MainStackScreens() {
         name="ClaimCategory"
         component={ClaimCategory}
         options={({ route }) => ({
-          title: route.params.claimCategoryName,
+          title: route.params != null ? route.params.claimCategoryName : null,
         })}
       />
 
@@ -262,7 +283,6 @@ function MainStackScreens() {
           title: "Send Result",
           headerLeft: () => null,
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -272,7 +292,6 @@ function MainStackScreens() {
         options={{
           title: "Seed",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -316,11 +335,17 @@ function MainStackScreens() {
         name="GeneralWalletSettings"
         component={GeneralWalletSettings}
         options={{
-          title: "General Wallet Settings",
+          title: "General",
         }}
       />
 
-      <MainStack.Screen name="CoinSettings" component={CoinSettings} />
+      <MainStack.Screen
+        name="CoinSettings"
+        component={CoinSettings}
+        options={({ route }) => ({
+          title: route.params != null ? route.params.title : null,
+        })}
+      />
 
       <MainStack.Screen
         name="DeleteProfile"
@@ -337,7 +362,6 @@ function MainStackScreens() {
           title: "Loading",
           headerRight: () => null,
           headerLeft: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -356,7 +380,6 @@ function MainStackScreens() {
         component={SelectPaymentMethod}
         options={{
           title: "Select Payment Method",
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -432,7 +455,6 @@ function MainStackScreens() {
         component={ManageWyreAccount}
         options={{
           title: "Manage Wyre Account",
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -442,7 +464,6 @@ function MainStackScreens() {
         options={{
           title: "Manage Wyre Email",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -452,7 +473,6 @@ function MainStackScreens() {
         options={{
           title: "Manage Wyre Cellphone",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -462,7 +482,6 @@ function MainStackScreens() {
         options={{
           title: "Upload Documents",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -472,7 +491,6 @@ function MainStackScreens() {
         options={{
           title: "Manage Payment Method",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -482,7 +500,6 @@ function MainStackScreens() {
         options={{
           title: "Upload Personal Details",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -492,7 +509,6 @@ function MainStackScreens() {
         options={{
           title: "Upload Proof of Address",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -502,7 +518,6 @@ function MainStackScreens() {
         options={{
           title: "Manage Wyre Address",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
 
@@ -512,7 +527,6 @@ function MainStackScreens() {
         options={{
           title: "Confirm transaction",
           headerRight: () => null,
-          drawerLockMode: "locked-closed",
         }}
       />
     </MainStack.Navigator>
@@ -607,38 +621,27 @@ function LoadingStackScreens() {
 export default function RootStackScreens(hasAccount, loading, signedIn) {
   return (
     <RootStack.Navigator
-      drawerWidth={250}
-      drawerPosition="right"
-      drawerContent={(props) => <SideMenu {...props} />}
       screenOptions={{
         mode: "modal",
+        headerShown: false,
       }}
     >
       {loading ? (
         <RootStack.Screen
           name="LoadingStack"
           component={LoadingStackScreens}
-          options={{
-            gesturesEnabled: false,
-            drawerLockMode: "locked-closed",
-          }}
         />
       ) : hasAccount ? (
         signedIn ? (
           <RootStack.Screen
             name="SignedIn"
-            component={MainStackScreens}
-            options={{
-              gesturesEnabled: false,
-            }}
+            component={MainScreens}
           />
         ) : (
           <RootStack.Screen
             name="SignedOutStack"
             component={SignedOutStackScreens}
             options={{
-              gesturesEnabled: false,
-              drawerLockMode: "locked-closed",
               headerRight: () => null,
             }}
           />
@@ -647,10 +650,6 @@ export default function RootStackScreens(hasAccount, loading, signedIn) {
         <RootStack.Screen
           name="SignedOutNoKeyStack"
           component={SignedOutNoKeyStackScreens}
-          options={{
-            gesturesEnabled: false,
-            drawerLockMode: "locked-closed",
-          }}
         />
       )}
     </RootStack.Navigator>

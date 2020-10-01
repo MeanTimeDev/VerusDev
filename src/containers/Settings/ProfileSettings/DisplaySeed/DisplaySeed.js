@@ -16,10 +16,11 @@ import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
 import Styles from '../../../../styles/index'
 import Colors from "../../../../globals/colors";
+import { CommonActions } from '@react-navigation/native';
 import { ELECTRUM } from "../../../../utils/constants/intervalConstants";
 import { Dropdown } from "react-native-material-dropdown";
 
-class ResetPwd extends Component {
+class DisplaySeed extends Component {
   constructor() {
     super();
     this.state = {
@@ -63,6 +64,7 @@ class ResetPwd extends Component {
       routes: [{ name: route }],
     });
 
+    this.props.navigation.closeDrawer();
     this.props.navigation.dispatch(resetAction);
   };
 
@@ -150,4 +152,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(ResetPwd);
+export default connect(mapStateToProps)(DisplaySeed);

@@ -4,6 +4,7 @@ export * from './actions/WalletSettings'
 export * from './actions/cache/Electrum'
 export * from './actions/cache/Headers'
 export * from './actions/cache/Cache'
+export * from './actions/cache/EthTransactionReceipts'
 export * from './actions/updateManager'
 
 export * from './actionCreators/claims';
@@ -61,6 +62,9 @@ import {
   CLOSE_DLIGHT_SOCKET,
   REQUEST_SEED_DATA,
   APP_SETUP,
+  SET_ETH_TX_RECEIPTS,
+  ADD_ETH_TX_RECEIPT,
+  SET_COIN_SUB_WALLET,
 } from "../utils/constants/storeType";
 
 //Reducer Name: authentication
@@ -298,6 +302,24 @@ export const setBlockHeaders = (headers) => {
   }
 }
 
+//Reducer Name: headers
+export const addTxReceipt = (receipt, txid) => {
+  let key = txid
+  return {
+    type: ADD_ETH_TX_RECEIPT,
+    key: key,
+    receipt
+  }
+}
+
+//Reducer Name: ethtxreceipts
+export const setEthTxReceipts = (receipts) => {
+  return {
+    type: SET_ETH_TX_RECEIPTS,
+    receipts
+  }
+}
+
 export const clearDataCache = () => {
   return {
     type: CLEAR_CACHE,
@@ -319,6 +341,16 @@ export const setActiveOverviewFilter = (chainTicker, filterType) => {
     payload: {
       chainTicker,
       filterType
+    }
+  }
+}
+
+export const setCoinSubWallet = (chainTicker, subWallet) => {
+  return {
+    type: SET_COIN_SUB_WALLET,
+    payload: {
+      chainTicker,
+      subWallet
     }
   }
 }
@@ -414,10 +446,11 @@ export const getTransactionHistoryResponse = (history = {}) => ({
   }
 });
 
-	export const requestSeedData = () => ({
+export const requestSeedData = () => ({
   type: REQUEST_SEED_DATA,
   payload: {},
 });
+
 export const appSetup = () => ({
   type: APP_SETUP,
   payload: {},

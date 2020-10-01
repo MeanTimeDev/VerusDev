@@ -8,6 +8,8 @@ import {
   GENERAL,
   DLIGHT,
   ELECTRUM,
+  ETH,
+  ERC20
 } from './intervalConstants'
 
 /**
@@ -75,10 +77,10 @@ export const DEFAULT_COIN_UPDATE_PARAMS = {
       tracking_info: {
         // Set this to only enable this update when the chainticker that the update interval was created for is 
         // active
-        coin_bound: true, 
+        coin_bound: false, 
         // Set this to an array of screen keys to restrict this update to happening only inside of a coin application,
         // on the specified screens
-        update_locations: ['wallet-overview', 'wallet-send'], 
+        update_locations: null, 
         needs_update: true,
         busy: {},
       },
@@ -93,8 +95,8 @@ export const DEFAULT_COIN_UPDATE_PARAMS = {
     },
     syncing: {
       tracking_info: {
-        coin_bound: true, 
-        update_locations: ['wallet-overview', 'wallet-send'], 
+        coin_bound: false, 
+        update_locations: null, 
         needs_update: true,
         busy: {},
       },
@@ -109,8 +111,8 @@ export const DEFAULT_COIN_UPDATE_PARAMS = {
     },
     post_sync: {
       tracking_info: {
-        coin_bound: true, 
-        update_locations: ['wallet-overview', 'wallet-send'], 
+        coin_bound: false, 
+        update_locations: null, 
         needs_update: true,
         busy: {},
       },
@@ -125,7 +127,7 @@ export const DEFAULT_COIN_UPDATE_PARAMS = {
     }
   },
   [API_GET_TRANSACTIONS]: {
-    channels: [DLIGHT, ELECTRUM],
+    channels: [DLIGHT, ELECTRUM, ETH, ERC20],
     restrictions: [],
     pre_data: {
       tracking_info: {
@@ -177,7 +179,7 @@ export const DEFAULT_COIN_UPDATE_PARAMS = {
     }
   },
   [API_GET_BALANCES]: {
-    channels: [DLIGHT, ELECTRUM],
+    channels: [DLIGHT, ELECTRUM, ETH, ERC20],
     restrictions: [],
     pre_data: {
       tracking_info: {

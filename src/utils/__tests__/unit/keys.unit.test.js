@@ -6,7 +6,8 @@ import {
   MOCK_PIN,
   MOCK_LEGACY_ENCRYPTEDKEY,
   MOCK_PRIVKEY,
-  MOCK_PUBKEY
+  MOCK_PUBKEY,
+  MOCK_ENCRYPTEDKEY
 } from '../../../tests/helpers/MockAuthData'
 
 describe("Main wallet keypair generator", () => {
@@ -20,7 +21,7 @@ describe("Main wallet keypair generator", () => {
   })
 
   it('can create keypair from modern encrypted key', () => {
-    let keyPair = pairFromPwd(MOCK_PIN, MOCK_LEGACY_ENCRYPTEDKEY, 'VRSC')
+    let keyPair = pairFromPwd(MOCK_PIN, MOCK_ENCRYPTEDKEY, 'VRSC')
     
     expect(keyPair).toHaveProperty('pubKey')
     expect(keyPair).toHaveProperty('privKey')

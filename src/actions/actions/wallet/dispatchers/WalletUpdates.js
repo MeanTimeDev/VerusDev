@@ -76,7 +76,11 @@ export const conditionallyUpdateWallet = async (state, dispatch, chainTicker, up
   if (updateInfo != null && updateInfo.channels.length > 0) {
     const { coin_bound, update_locations, channels } = updateInfo
     const openChannels = channels.filter(channel => {
-      return !(updateInfo.busy[channel] === true)
+      return (
+        !(updateInfo.busy[channel] === true) &&
+        state[`channelStore_${channel}`] &&
+        state[`channelStore_${channel}`].openChannels[chainTicker]
+      );
     })
     const { activeSection, activeCoin, coinMenuFocused } = state.coins
 
@@ -84,10 +88,20 @@ export const conditionallyUpdateWallet = async (state, dispatch, chainTicker, up
       //dispatch(logDebugWarning(`The ${updateId} call for ${chainTicker} is taking a very long time to complete. This may impact performace.`)
       console.log(`A ${updateId} call for ${chainTicker} has been called while another example of the same call is busy.`)
     } else if (updateInfo && updateInfo.needs_update) {    
-      if (coin_bound && (!coinMenuFocused || activeCoin == null || activeCoin.id !== chainTicker)) {
-        return API_ABORTED
-      } else if (update_locations != null && (!coinMenuFocused || activeSection == null || !update_locations.includes(activeSection.key))) {
-        return API_ABORTED
+      if (
+        coin_bound &&
+        (!coinMenuFocused ||
+          activeCoin == null ||
+          activeCoin.id !== chainTicker)
+      ) {
+        return API_ABORTED;
+      } else if (
+        update_locations != null &&
+        (!coinMenuFocused ||
+          activeSection == null ||
+          !update_locations.includes(activeSection.key))
+      ) {
+        return API_ABORTED;
       }
 
       if(await udpateWalletData(state, dispatch, openChannels, chainTicker, updateId)) {
