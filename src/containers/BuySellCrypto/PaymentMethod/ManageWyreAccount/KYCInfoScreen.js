@@ -5,6 +5,7 @@ import {
   View,
   Text,
   Alert,
+  ScrollView
 } from 'react-native';
 import {
   selectWyreAccount,
@@ -19,6 +20,12 @@ import {
 import Styles from '../../../../styles/index';
 
 import Colors from '../../../../globals/colors';
+
+import Nr1 from '../../../../images/customIcons/nr1.svg';
+import Nr2 from '../../../../images/customIcons/nr2.svg';
+import Nr3 from '../../../../images/customIcons/nr3.svg';
+import Nr4 from '../../../../images/customIcons/nr4.svg';
+
 
 import { NavigationActions } from '@react-navigation/compat'
 
@@ -44,88 +51,90 @@ onClick = () => {
 
   render() {
 
-    const scaleFactorY = 2;
-    const scalefatorX = 2;
-
     return (
       <View style={Styles.root}>
-        <View style={Styles.centralRow}>
+        <View style={Styles.progressBarContainer}>
           <Badge
-            status="success"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
+            badgeStyle={ Styles.progessBadgeDone }
+            containerStyle={Styles.horizontalPaddingBox10}
+          />
+          <Badge
+
+            badgeStyle={ Styles.progessBadgeTodo }
             containerStyle={Styles.horizontalPaddingBox10}
           />
           <Badge
             status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
+            badgeStyle={ Styles.progessBadgeTodo }
             containerStyle={Styles.horizontalPaddingBox10}
           />
           <Badge
             status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
-          <Badge
-            status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
+            badgeStyle={ Styles.progessBadgeTodo }
             containerStyle={Styles.horizontalPaddingBox10}
           />
         </View>
+        <ScrollView>
         <View>
           <View style={Styles.padding}>
-            <Text style={Styles.boldText}>To use our fiat gateway, primetrust has to verify your identity</Text>
+            <Text style={Styles.boldKYCText}>To use our fiat gateway, primetrust has to verify your identity</Text>
           </View>
 
           <View >
-            <Text style={{ ...Styles.centralLightTextPadded, ...Styles.padding, textAlign: 'left' }}>all documents are handled securely and with care. PrimeTrust Privacy Policy, Terms of Service</Text>
+            <Text style={{ ...Styles.normalKYCText, ...Styles.padding }}>all documents are handled securely and with care. PrimeTrust Privacy Policy, Terms of Service</Text>
           </View>
-
         </View>
         <View>
-          <View style={Styles.alignItemsRight}>
-          <View style={{...Styles.startRow, ...Styles.containerVerticalPadding, width: '100%'}}>
-            <Badge status="primary" containerStyle={Styles.horizontalPaddingBox5} />
-              <Text style={{...Styles.leftLightText, width: '60%'}}>Create your account</Text>
-              <Text style={Styles.infoText}>Completed</Text>
+          <View style={{...Styles.alignItemsRight, justifyContent: 'space-evenly'}}>
+            <View style={Styles.height50}>
+              <View style={Styles.infoKYCContainer}>
+                <Nr1 height={'110%'} width={'15%'} />
+                  <Text style={{...Styles.normalKYCText, ...Styles.narrow}}>Create your account</Text>
+                  <Text style={Styles.boldKYCText}>Completed</Text>
+              </View>
+            </View>
+          </View>
+        <View style={Styles.height50}>
+           <View style={Styles.infoKYCContainer}>
+              <Nr2 height={'100%'} width={'15%'} />
+              <View style={{...Styles.alignItemsRight, ...Styles.narrow}}>
+                <Text style={Styles.normalKYCText}>My personal information</Text>
+                  <Text style={Styles.smallKYCText}>name, date of birth, address</Text>
+              </View>
+              <Text style={Styles.boldKYCText}>1 min</Text>
            </View>
-           <View style={{...Styles.startRow, ...Styles.containerVerticalPadding, width: '100%'}}>
-             <Badge status="primary" containerStyle={Styles.horizontalPaddingBox5} />
-              <View style={{...Styles.alignItemsRight, width: '60%'}}>
-                <Text style={Styles.leftLightText}>My personal information</Text>
-                  <Text>name, date of birth, address</Text>
-              </View>
-             <Text style={Styles.infoText}>1 min</Text>
-            </View>
-            <View style={{...Styles.startRow,...Styles.containerVerticalPadding, width: '100%'}}>
-              <Badge status="primary" containerStyle={Styles.horizontalPaddingBox5} />
-                <View style={{...Styles.alignItemsRight, width: '60%'}}>
-                  <Text style={Styles.leftLightText} >Verify Photo ID</Text>
-                   <Text >Scan or upload document</Text>
-                </View>
-                <Text style={Styles.infoText}>2 min</Text>
-             </View>
-             <View style={{...Styles.startRow,...Styles.containerVerticalPadding, width: '100%'}}>
-               <Badge status="primary" containerStyle={Styles.horizontalPaddingBox5} />
-                 <View style={{...Styles.alignItemsRight, width: '60%'}}>
-                   <Text style={Styles.leftLightText}>Proof of Address</Text>
-                   <Text>Scan or upload document</Text>
-                 </View>
-                 <Text style={{ ...Styles.infoText  }}>2 min</Text>
-              </View>
-                <View style={Styles.alignItemsRight}>
-
-                </View>
-            </View>
-      </View>
-        <View style={Styles.padding}>
-          <Button
-          title="START"
-          titleStyle={Styles.whiteText}
-          buttonStyle={Styles.fullWidthButton}
-          onPress={ this.onClick }
-          />
         </View>
-      </ View>
+          <View style={Styles.height50}>
+            <View style={Styles.infoKYCContainer}>
+                <Nr3 height={'100%'} width={'15%'} />
+                <View style={{...Styles.alignItemsRight, ...Styles.narrow}}>
+                   <Text style={Styles.normalKYCText} >Verify Photo ID</Text>
+                   <Text style={Styles.smallKYCText}>Scan or upload document</Text>
+                </View>
+                <Text style={Styles.boldKYCText}>2 min</Text>
+            </View>
+          </View>
+        <View style={Styles.height50}>
+          <View style={Styles.infoKYCContainer}>
+            <Nr4 height={'100%'} width={'15%'} />
+            <View style={{...Styles.alignItemsRight, ...Styles.narrow}}>
+              <Text style={Styles.normalKYCText}>Proof of Address</Text>
+              <Text style={Styles.smallKYCText}>Scan or upload document</Text>
+            </View>
+            <Text style={{ ...Styles.boldKYCText  }}>2 min</Text>
+          </View>
+        </View>
+       </View>
+     </ScrollView>
+        <View style={Styles.footerContainerKYC}>
+          <Button
+            title="START"
+            titleStyle={Styles.whiteText}
+            buttonStyle={Styles.fullWidthButtonKYC}
+            onPress={ this.onClick }
+           />
+        </View>
+   </View>
     );
   }
 }

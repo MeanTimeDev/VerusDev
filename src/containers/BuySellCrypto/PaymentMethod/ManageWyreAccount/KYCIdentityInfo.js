@@ -6,6 +6,7 @@ import {
   Text,
   Alert,
   Image,
+  ScrollView
 } from 'react-native';
 import {
   selectWyreAccount,
@@ -25,6 +26,9 @@ import VerifyIdentity from '../../../../images/customIcons/VerifyIdentity.svg';
 
 import { NavigationActions } from '@react-navigation/compat';
 
+import Nr1 from '../../../../images/customIcons/nr1.svg';
+import Nr2 from '../../../../images/customIcons/nr2.svg';
+
 const icons = require('../../../../images/customIcons');
 
 class KYCIdentityInfo extends Component {
@@ -33,82 +37,84 @@ constructor(props) {
 }
 
 
-  componentDidMount() {
-
-  }
-
-  componentWillUnmount() {
-
-  }
-
 
 
 onClick = () => {  this.props.navigation.navigate("KYCIdentityInput") }
 
+render() {
 
-  render() {
+return (
+  <View style={Styles.root}>
+    <View style={Styles.progressBarContainer}>
+      <Badge
+        status="success"
+        badgeStyle={Styles.progessBadgeDone }
+        containerStyle={Styles.horizontalPaddingBox10}
+      />
+      <Badge
+        status="primary"
+        badgeStyle={Styles.progessBadgeTodo}
+        containerStyle={Styles.horizontalPaddingBox10}
+      />
+      <Badge
+        status="primary"
+        badgeStyle={Styles.progessBadgeTodo }
+        containerStyle={Styles.horizontalPaddingBox10}
+      />
+      <Badge
+        status="primary"
+        badgeStyle={Styles.progessBadgeTodo}
+        containerStyle={Styles.horizontalPaddingBox10}
+      />
+    </View>
+    <ScrollView>
+    <View style={Styles.svgHeader}>
+      <VerifyIdentity height={'100%'} width={'100%'}/>
+    </View>
+    <View style={Styles.padding}>
+      <Text style={Styles.boldKYCText} >verify your Identity</Text>
+    </View>
+    <View style={Styles.padding}>
+      <Text style={{ ...Styles.normalKYCText}}>In order to comply with federal regulation, we need some basic personal information</Text>
+    </View>
 
-    const scaleFactorY = 2;
-    const scalefatorX = 2;
-
-    return (
-      <View style={Styles.root}>
-        <View style={Styles.centralRow}>
-          <Badge
-            status="success"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
+    <View style={Styles.padding}>
+      <View style={Styles.alignItemsRight}>
+        <View style={Styles.infoKYCContainer}>
           <Badge
             status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
+            badgeStyle={Styles.smallBlackDot}
+            containerStyle={Styles.smallBlackDotContainer}
           />
-          <Badge
-            status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
-          <Badge
-            status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
-        </View>
-        <View style={Styles.svgHeader}>
-          <VerifyIdentity height={'100%'} width={'100%'}/>
-        </View>
-        <View style={Styles.padding}>
-          <View>
-            <Text style={Styles.boldText} >verify your Identity</Text>
-          </View>
-          <View>
-            <Text style={{ ...Styles.centralLightTextPadded, textAlign: 'left' }}>In order to comply with federal regulation, we need some basic personal information</Text>
+          <View style={Styles.wide}>
+            <Text style={{...Styles.normalKYCText}}>legalname, home address and date of birth</Text>
           </View>
         </View>
-        <View style={Styles.padding}>
-        <View style={Styles.alignItemsRight}>
-        <View style={{...Styles.startRow, ...Styles.containerVerticalPadding, width: '100%'}}>
-          <Badge status="primary" containerStyle={Styles.horizontalPaddingBox5} />
-            <Text style={{...Styles.leftLightText, width: '90%'}}>legalname, home address and date of birth</Text>
-         </View>
-         <View style={{...Styles.startRow, ...Styles.containerVerticalPadding, width: '100%'}}>
-           <Badge status="primary" containerStyle={Styles.horizontalPaddingBox5} />
-             <Text style={{...Styles.leftLightText, width: '90%'}}>tax identitification number(TIN) for U.S. residents only</Text>
-          </View>
+        <View style={Styles.infoKYCContainer}>
+           <Badge
+             status="primary"
+             badgeStyle={Styles.smallBlackDot}
+             containerStyle={Styles.smallBlackDotContainer}
+           />
+           <View style={Styles.wide}>
+             <Text style={{...Styles.normalKYCText}}>tax identitification number(TIN) for U.S. residents only</Text>
+           </View>
         </View>
-        </View>
-        <View style={Styles.padding}>
-        <Button
-        title="CONTINUE"
-        titleStyle={Styles.whiteText}
-        buttonStyle={Styles.fullWidthButton}
-        onPress={ this.onClick }
-        />
       </View>
-      </ View>
-    );
-  }
+    </View>
+    </ScrollView>
+
+    <View style={{...Styles.footerContainerKYC}}>
+      <Button
+      title="CONTINUE"
+      titleStyle={Styles.whiteText}
+      buttonStyle={Styles.fullWidthButtonKYC}
+      onPress={ this.onClick }
+      />
+    </View>
+
+  </View>
+);}
 }
 
 const mapStateToProps = (state) => ({

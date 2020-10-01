@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Text,
+  ScrollView
 } from 'react-native';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
@@ -218,8 +219,6 @@ class KYCIdentityInput extends Component {
   };
 
   render() {
-    const scaleFactorY = 2;
-    const scalefatorX = 2;
 
     return (
       <TouchableWithoutFeedback onPress={() =>{
@@ -229,36 +228,41 @@ class KYCIdentityInput extends Component {
         }
       }} accessible={false}>
         <View style={Styles.root}>
-          <View style={Styles.centralRow}>
+          <View style={Styles.progressBarContainer}>
             <Badge
               status="success"
-              badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
+              badgeStyle={Styles.progessBadgeDone}
               containerStyle={Styles.horizontalPaddingBox10}
             />
             <Badge
               status="primary"
-              badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
+              badgeStyle={Styles.progessBadgeTodo}
               containerStyle={Styles.horizontalPaddingBox10}
             />
             <Badge
               status="primary"
-              badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
+              badgeStyle={Styles.progessBadgeTodo}
               containerStyle={Styles.horizontalPaddingBox10}
             />
             <Badge
               status="primary"
-              badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
+              badgeStyle={Styles.progessBadgeTodo}
               containerStyle={Styles.horizontalPaddingBox10}
             />
           </View>
-
+          <ScrollView>
             <View style={styles.mainInputView}>
               <Spinner
                 visible={this.props.isFetching}
                 textContent="Loading..."
                 textStyle={{ color: '#FFF' }}
               />
+                          <View style={Styles.padding}>
               <View>
+                <Text style={{...Styles.boldText}}>Enter your personal information</Text>
+              </View>
+            </View>
+            <View style={{...Styles.wideCenterBlockInput, ...Styles.topPadding}}>
                 <Input
                   label="Legal Name:"
                   labelStyle={styles.formLabel}
@@ -268,18 +272,19 @@ class KYCIdentityInput extends Component {
                   inputStyle={styles.formInputContainer}
                 />
               </View>
-              <View>
-                <Text style={styles.formLabel}>
+              <View style={Styles.wideCenterBlockInput90}>
+              <TouchableOpacity onPress={this.showCalendar}>
+              <Text style={{...Styles.formLabel}}>
                   Date of Birth YYYY-MM-DD:
                 </Text>
-                <View style={styles.containerDateOfBirth}>
+                <View>
                   <TextInputMask
                     onChangeText={(formatted) => {
                       this.setState({dateOfBirth: formatted})
                     }}
                     value={this.state.dateOfBirth}
                     mask={"[0000]-[00]-[00]"}
-                    style={styles.inputMaskDateOfBirth}
+                    style={{ ...Styles.formInput, borderBottomWidth: 1}}
                   />
                   <View style={styles.containerCalendarButton} >
                     <TouchableOpacity onPress={this.showCalendar}>
@@ -302,7 +307,7 @@ class KYCIdentityInput extends Component {
                       style={{backgroundColor: 'white'}} />
                   }
                 </View>
-              </View>
+              
               <View>
                 <View style={styles.dropdownInput}>
                     <Dropdown
@@ -351,17 +356,20 @@ class KYCIdentityInput extends Component {
                   inputStyle={styles.formInputContainer}
                 />
               </View>
-              <View>
-              <View>
-              <Input
-                  label="Phone Number including country code:"
-                  labelStyle={styles.formLabel}
-                  onChangeText={(text) => this.setState({ phoneNumber: text })}
-                  value={this.state.phoneNumber}
-                  autoCorrect={false}
-                  inputStyle={styles.formInputContainer}
-                />
+              </TouchableOpacity>
               </View>
+              <View>
+                <View>
+                  <Input
+                      label="Phone Number including country code:"
+                      labelStyle={styles.formLabel}
+                      onChangeText={(text) => this.setState({ phoneNumber: text })}
+                      value={this.state.phoneNumber}
+                      autoCorrect={false}
+                      inputStyle={styles.formInputContainer}
+                    />
+                 </View>
+              </View>   
               <View style={styles.buttonContainerBottom}>
                 <Button
                 titleStyle={Styles.whiteText}
@@ -386,9 +394,9 @@ class KYCIdentityInput extends Component {
                 />
               </View>
             </View>
+            </ScrollView>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+    </TouchableWithoutFeedback>
     );
   }
 }

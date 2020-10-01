@@ -76,6 +76,7 @@ class KYCAddressInput extends Component {
         console.log("ExistingAddress",existingAddress);
         console.log("individual Country:",existingAddress["country"]);
         if(existingAddress != null){
+          this.setState({});
           if(this.state.streetAddress1 == undefined) this.setState({streetAddress1 : existingAddress["street-1"]});
           if(this.state.streetAddress2 == undefined) this.setState({streetAddress2 : existingAddress["street-2"]});
           if(this.state.city == undefined) this.setState({city : existingAddress["city"]});

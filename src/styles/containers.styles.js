@@ -65,13 +65,34 @@ export default containers = {
     paddingVertical: 16,
     alignSelf: 'center',
   },
+  wideCenterBlockInput: {
+    width: '95%',
+    paddingVertical: 16,
+    alignSelf: 'center',
+    paddingBottom: 18,
+  },
+  wideCenterBlockInput90: {
+    width: '90%',
+    paddingVertical: 16,
+    alignSelf: 'center',
+    paddingBottom: 18,
+  },
   standardWidthCenterBlock: {
     width: '75%',
     paddingVertical: 16,
     alignSelf: 'center',
   },
+  infoKYCContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    paddingVertical:8,
+    width: '100%'
+  },
   wide: {
     width: '90%',
+  },
+  narrow: {
+    width: '60%'
   },
   wideCenter: {
     width: '90%',
@@ -119,7 +140,7 @@ export default containers = {
   },
   svgHeader:{
     width:'100%',
-    height: '20%',
+    height: 150,
     justifyContent: 'center',
     paddingTop: 12
   },
@@ -287,6 +308,14 @@ export default containers = {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  containerCalendarButton: {
+      width: '15%',
+      marginTop: '5%',
+      marginLeft: '3%',
+  },
+  height50: {
+    height: 85,
   },
   paddedBorderedBox: {
     borderWidth: 1,

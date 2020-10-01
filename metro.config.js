@@ -2,6 +2,7 @@ const { getDefaultConfig } = require("metro-config");
 
 module.exports = (async () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const {
 		resolver: {
 			sourceExts,
@@ -18,6 +19,8 @@ module.exports = (async () => {
 			sourceExts: [...sourceExts, "svg"]
 		}};
 =======
+=======
+>>>>>>> upstream/new_gateway
   const {
     resolver: { sourceExts, assetExts },
   } = await getDefaultConfig();
@@ -32,5 +35,8 @@ module.exports = (async () => {
       sourceExts: [...sourceExts, "svg"],
     },
   };
+<<<<<<< HEAD
 >>>>>>> upstream/gateway
+=======
+>>>>>>> upstream/new_gateway
 })();

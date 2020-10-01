@@ -9,7 +9,7 @@
 */
 
 import React, { Component } from "react";
-import { ListItem, Divider, Button } from "react-native-elements";
+import { ListItem, Divider } from "react-native-elements";
 import {
   View,
   Text,
@@ -42,10 +42,14 @@ import {
 import { USD } from '../../utils/constants/currencies'
 import { conditionallyUpdateWallet } from "../../actions/actionDispatchers";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import VerusLightClient from 'react-native-verus-light-client';
 =======
 import { arrayToObject } from "../../utils/objectManip";
 >>>>>>> upstream/gateway
+=======
+import { arrayToObject } from "../../utils/objectManip";
+>>>>>>> upstream/new_gateway
 
 const CONNECTION_ERROR = "Connection Error"
 
@@ -111,9 +115,6 @@ class Home extends Component {
     this.refresh();
   }
 
-
-
-
   updateProps = (promiseArray) => {
     return new Promise((resolve, reject) => {
       Promise.all(promiseArray)
@@ -153,6 +154,7 @@ class Home extends Component {
     const balanceErrors = props.balances.errors.public
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     for (let key in rates) {
       if (rates[key][displayCurrency]) {
         const price = rates[key][displayCurrency]
@@ -160,6 +162,8 @@ class Home extends Component {
         coinBalance = balances.hasOwnProperty(key) && !balanceErrors[key] && !isNaN(balances[key].confirmed) ?
         truncateDecimal(balances[key].confirmed, 4) : 0
 =======
+=======
+>>>>>>> upstream/new_gateway
     activeCoinsForUser.map(coinObj => {
       const key = coinObj.id
       const channel = coinObj.dominant_channel ? coinObj.dominant_channel : ELECTRUM
@@ -173,7 +177,10 @@ class Home extends Component {
           !isNaN(balances[channel][key].confirmed)
             ? truncateDecimal(balances[channel][key].confirmed, 4)
             : 0;
+<<<<<<< HEAD
 >>>>>>> upstream/gateway
+=======
+>>>>>>> upstream/new_gateway
 
         _totalFiatBalance += coinBalance*price
       }
@@ -210,17 +217,20 @@ class Home extends Component {
     let navigation = this.props.navigation
     this.props.dispatch(setActiveSectionBuySellCrypto('buy-crypto'))
 
-    navigation.navigate("BuySellCryptoMenus", {title: "Buy"});
+    navigation.navigate("KYCStartScreen");
   }
 
   handleScanToVerify = () => {
     this.props.navigation.navigate('ScanBadge');
   }
 
+<<<<<<< HEAD
   onKYCScreen = () => {
     this.props.navigation.navigate("KYCLogin");
   }
 
+=======
+>>>>>>> upstream/new_gateway
   renderCoinList = () => {
     const { rates, balances, activeCoinsForUser, displayCurrency } = this.props;
 
@@ -382,9 +392,9 @@ class Home extends Component {
         </TouchableOpacity>
       </ScrollView>
     );
-}
+  }
 
-render() {
+  render() {
     return (
       <View style={Styles.defaultRoot}>
         <Text style={Styles.fiatLabel}>
@@ -394,10 +404,6 @@ render() {
         </Text>
         <Text style={Styles.boldListHeader}>{"Portfolio"}</Text>
         {this.renderCoinList()}
-        <Button
-          title="go to kyc screen"
-          onPress={this.onKYCScreen}
-          />
       </View>
     );
   }
@@ -408,10 +414,6 @@ const mapStateToProps = (state) => {
     activeCoinsForUser: state.coins.activeCoinsForUser,
     activeCoinList: state.coins.activeCoinList,
     activeAccount: state.authentication.activeAccount,
-    info: {
-      public: state.ledger.info[ELECTRUM],
-      private: state.ledger.info[DLIGHT],
-    },
     balances: {
       public: arrayToObject(
         Object.keys(state.ledger.balances),
@@ -434,6 +436,5 @@ const mapStateToProps = (state) => {
       state.settings.generalWalletSettings.displayCurrency || USD,
   };
 };
-
 
 export default connect(mapStateToProps)(Home);

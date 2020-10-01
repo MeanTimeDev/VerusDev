@@ -85,6 +85,30 @@ export default text = {
     fontSize: 16,
     textAlign: 'left',
   },
+  boldKYCText: {
+    fontSize: 16,
+    fontFamily: 'Avenir-Black',
+    fontWeight: 'bold',
+    color: Colors.kycBlack,
+  },
+  normalKYCText:{
+    fontSize: 16,
+    fontFamily: 'Avenir-Medium',
+    fontWeight: 'normal',
+    color: Colors.kycBlack,
+  },
+  smallKYCText:{
+    fontSize: 14,
+    fontFamily: 'Avenir-Medium',
+    fontWeight: 'normal',
+    color: Colors.kycLight,
+  },
+  headerKYCText: {
+    fontSize: 20,
+    fontFamily: 'Avenir-Black',
+    fontWeight: 'bold',
+    color: Colors.kycBlack,
+  },
   centralInfoTextPadded: {
     fontFamily: 'Avenir-Black',
     color: Colors.quaternaryColor,
@@ -92,7 +116,7 @@ export default text = {
     paddingVertical: 6,
   },
   whiteText: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: 'Avenir-Medium',
     color: Colors.secondaryColor,
   },
   linkText: {
@@ -187,6 +211,7 @@ export default text = {
   listItemRightTitleDefault: {
     color: Colors.quinaryColor,
   },
+<<<<<<< HEAD
   listItemRightTitleDefaultError: {
     color: Colors.quinaryColor,
     paddingVertical: 2,
@@ -194,6 +219,8 @@ export default text = {
   listItemSubtitleDefault: {
     color: 'gray',
   },
+=======
+>>>>>>> upstream/new_gateway
   listItemSubtitleError: {
     color: 'rgba(206,68,70,1)',
   },

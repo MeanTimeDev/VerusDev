@@ -5,19 +5,25 @@ import {
   Platform,
   View,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Keyboard,
   Alert,
   Image,
   Text,
   StyleSheet,
-
+  ScrollView,
 } from 'react-native';
 
 import { Dropdown } from 'react-native-material-dropdown';
+import Lock from '../../../../images/customIcons/iconmonstr-lock-18.svg';
+
 import {
   FormLabel,
   FormValidationMessage
 } from 'react-native-elements';
+
+import IDsIcon from '../../../../images/customIcons/IDsIcon.svg';
+import Arrow from '../../../../images/customIcons/iconmonstr-arrow-29.svg';
 
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -143,34 +149,33 @@ class KYCfoto extends Component {
 
   
   render() {
-    const scaleFactorY = 2;
-    const scalefatorX = 2;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={Styles.root}>
-        <View style={Styles.centralRow}>
-          <Badge
-            status="success"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
-          <Badge
-            status="success"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
-          <Badge
-            status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
-          <Badge
-            status="primary"
-            badgeStyle={ {scaleX: scalefatorX, scaleY: scaleFactorY } }
-            containerStyle={Styles.horizontalPaddingBox10}
-          />
-        </View>
+          <View style={Styles.progressBarContainer}>
+            <Badge
+              status="success"
+              badgeStyle={Styles.progessBadgeDone}
+              containerStyle={Styles.horizontalPaddingBox10}
+            />
+            <Badge
+              status="success"
+              badgeStyle={Styles.progessBadgeDone}
+              containerStyle={Styles.horizontalPaddingBox10}
+            />
+            <Badge
+              status="primary"
+              badgeStyle={Styles.progessBadgeTodo}
+              containerStyle={Styles.horizontalPaddingBox10}
+            />
+            <Badge
+              status="primary"
+              badgeStyle={Styles.progessBadgeTodo}
+              containerStyle={Styles.horizontalPaddingBox10}
+            />
+          </View>
+          <ScrollView>
           <View style={styles.mainInputView}>
             <Spinner
               visible={this.state.isFetching}
@@ -237,19 +242,46 @@ class KYCfoto extends Component {
                     title="CANCEL"
                     onPress={this.clearSelectedImage}
                   />
+                  <View style={styles.buttonContainer}>
+                    <Button
+                    titleStyle={Styles.whiteText}
+                    buttonStyle={Styles.fullWidthButtonKYC}
+                      title="CONFIRM"
+                      onPress={this.handleUpload}
+                    />
+                    <Button
+                    titleStyle={Styles.whiteText}
+                    buttonStyle={Styles.fullWidthButtonKYC}
+                      title="CANCEL"
+                      onPress={this.clearSelectedImage}
+                    />
+                  </View>
                 </View>
               </View>
             )}
+        </View>
+          <View style={Styles.alignItemsRight}>
+           <View style={{ height: '15%'}}>
+            <View style={{...Styles.startRow, ...Styles.containerVerticalPadding, width: '100%'}}>
+              <Lock style={{marginTop: 4}} height={'30%'} width={'10%'} />
+                  <Text style={{...Styles.smallKYCText, width: '80%'}}>PrimeTrust uses bank level encryption on all connections when receiving documents.</Text>
+             </View>
+            </View>
           </View>
+          </ScrollView>
+
+          <View style={Styles.footerContainerKYC}>
           <Button
           titleStyle={Styles.whiteText}
-          buttonStyle={Styles.defaultButtonClearWhite}
+          buttonStyle={Styles.fullWidthButtonKYC}
             title="CHEAT TO NEXT SCREEN"
             onPress={()=>{
               this.props.navigation.navigate("KYCAddressInfo")
             }
             }
           />
+        </View>
+
         </View>
       </TouchableWithoutFeedback>
     );

@@ -35,7 +35,67 @@ export default misc = {
   paddingTop:{
     paddingTop:20,
   },
-
+  icon: {
+      width: 20,
+      height: 20,
+      tintColor: 'black'
+  },
+  formLabel: {
+      fontSize: 14,
+      textAlign: 'left',
+      paddingTop: 0,
+      color: Colors.kycBlack,
+      marginVertical: 0,
+      paddingVertical: 0,
+      fontFamily: 'Avenir-Medium',
+      fontWeight: "bold",
+  },
+  formInput: {
+      fontSize: 16,
+      textAlign: 'left',
+      paddingTop: 0,
+      color: Colors.kycBlack,
+      marginVertical: 0,
+      paddingVertical: 0,
+      height: 50,
+      fontFamily: 'Avenir-Medium',
+      fontWeight: "normal",
+  },
+  progessBadgeDone: {
+    paddingRight: 60,
+    backgroundColor:  Colors.buttonKYC
+  },
+  progessBadgeTodo: {
+    paddingRight: 60,
+    backgroundColor:  Colors.kycPoint
+  },
+  progressBarContainer:{
+    paddingBottom: 16,
+    paddingTop: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignSelf: 'flex-start',
+    width: "100%",
+  },
+  smallBlackDotContainer:{
+    paddingTop: 5,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    width: "5%",
+  },
+  smallBlackDot: {
+    scaleX: 0.5,
+    scaleY: 0.5,
+    backgroundColor:  Colors.kycBlack,
+  },
+  inputMaskDateOfBirth: {
+      color: Colors.quaternaryColor,
+      borderBottomColor: '#86939d',
+      borderBottomWidth: 1,
+      width: '85%',
+      marginLeft: 20,
+      paddingVertical: 10,
+  },
   paddingBottom:{
     paddingBottom:4,
   },
