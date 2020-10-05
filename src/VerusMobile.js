@@ -17,16 +17,8 @@ import {
   checkAndSetVersion
 } from './utils/asyncStore/asyncStore'
 import { connect } from 'react-redux';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import VerusLightClient from 'react-native-verus-light-client';
-=======
 import { ENABLE_VERUS_IDENTITIES } from '../env/main.json'
->>>>>>> upstream/gateway
-=======
-import VerusLightClient from 'react-native-verus-light-client'
-import { ENABLE_VERUS_IDENTITIES } from '../env/main.json'
->>>>>>> upstream/new_gateway
 
 
 class VerusMobile extends React.Component {
@@ -48,7 +40,7 @@ class VerusMobile extends React.Component {
 
 
     //DELETE/REFACTOR
-    /*VerusLightClient.createWallet('VRSC', 'vrsc', '8ccb033c0e48b27ff91e1ab948367e3bbc6921487c97624ed7ad064025e3dc99', "lightwalletd.testnet.z.cash", 9067, 2, "a seed that is at least 32 bytes long so that it will work with the ZIP 32 protocol.", 0)
+    VerusLightClient.createWallet('VRSC', 'vrsc', '8ccb033c0e48b27ff91e1ab948367e3bbc6921487c97624ed7ad064025e3dc99', "lightwalletd.testnet.z.cash", 9067, 2, "a seed that is at least 32 bytes long so that it will work with the ZIP 32 protocol.", 0)
     .then(res => {
       console.log("ADD WALLET RES")
       console.log(res)
@@ -91,6 +83,7 @@ class VerusMobile extends React.Component {
       console.log("ERROR")
       console.log(e)
     })*/
+
 
     //TODO: Figure out what should trigger a cache clear on startup of server
     //versions. (The action that triggers it should indicate a server upgraded it's

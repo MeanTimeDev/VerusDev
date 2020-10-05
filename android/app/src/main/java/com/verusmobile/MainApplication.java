@@ -5,7 +5,6 @@ import android.content.Context;
 import com.facebook.react.PackageList;
 
 import com.facebook.react.ReactApplication;
-import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
@@ -33,8 +32,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
       return packages;
 
       /*return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new VectorIconsPackage()
+            new MainReactPackage()
       );*/
     }
 

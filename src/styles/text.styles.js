@@ -211,7 +211,6 @@ export default text = {
   listItemRightTitleDefault: {
     color: Colors.quinaryColor,
   },
-<<<<<<< HEAD
   listItemRightTitleDefaultError: {
     color: Colors.quinaryColor,
     paddingVertical: 2,
@@ -219,8 +218,6 @@ export default text = {
   listItemSubtitleDefault: {
     color: 'gray',
   },
-=======
->>>>>>> upstream/new_gateway
   listItemSubtitleError: {
     color: 'rgba(206,68,70,1)',
   },

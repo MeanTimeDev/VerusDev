@@ -69,7 +69,7 @@ onLogin = async () => {
 
   } else {
     console.log("login error:",login.error);
-    Alert.alert("Login failed", "Please cehck your email and password" );
+    Alert.alert("Login failed", "Please check your email and password" );
   }
 }
 

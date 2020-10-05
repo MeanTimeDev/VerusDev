@@ -332,19 +332,28 @@ class PrimeTrustInterface{
         if(sex) attributes["sex"] = sex;
         if(tax_id_number) attributes["tax-id-number"] = tax_id_number;
         if(tax_country) attributes["tax-country"] = tax_country;
-        if(primary_phone_number && primary_phone_country) {
-            attributes["primary-phone-number"] = {};
-            attributes["primary-phone-number"]["number"] = primary_phone_number;
-        }
-        if(primary_address) attributes["primary-address"] = primary_address;
+
         let request = {
             "data" : {
                 "type" : "contacts",
                 "attributes" : attributes
             }
         }
+
         console.log("attributes:",attributes);
         let response = await this.connection.dataPatch(url,request,this.jwt);
+
+        let phoneUrl = "/v2/addresses/"
+        if(primary_phone_number && primary_phone_country) {
+            attributes["primary-phone-number"] = {};
+            attributes["primary-phone-number"]["number"] = primary_phone_number;
+        }
+        
+        if(primary_address) attributes["primary-address"] = primary_address;
+
+        //update the address and the phone number
+
+
         console.log(response);
         return response;
     }
